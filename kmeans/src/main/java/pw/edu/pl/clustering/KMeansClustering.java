@@ -60,6 +60,9 @@ public class KMeansClustering {
             List<Vector<Double>> newCentroids = new ArrayList<Vector<Double>>(numClusters);
             for (int c = 0; c < numClusters; ++c) {
             	Vector<Double> emptyVector = new Vector<Double>(dataPoints.columns);
+            	for(int i = 0; i<emptyVector.capacity(); i++) {
+            		emptyVector.add(i, 0.0);
+            	}
             	newCentroids.add(c, emptyVector);
             }
             

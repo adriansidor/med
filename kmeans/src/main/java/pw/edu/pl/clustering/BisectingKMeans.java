@@ -26,7 +26,7 @@ public class BisectingKMeans {
         // easily transform the cluster to a Matrix
         List<List<Vector<Double>>> clusters = new ArrayList<List<Vector<Double>>>(numClusters);
         for (int c = 0; c < numClusters; ++c)
-            clusters.set(0, new ArrayList<Vector<Double>>());
+            clusters.add(0, new ArrayList<Vector<Double>>());
 
         // Make the first bisection.
         int[] assignments = kmeans.cluster(dataPoints, 2);

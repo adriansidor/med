@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-class Matrix {
+public class Matrix {
 
     /**
      * The list of {@code DoubleVector}s providing the values for the {@code
@@ -44,7 +44,7 @@ class Matrix {
         }        
     }
     
-    public Matrix(File file) {
+/*    public Matrix(File file) {
     	try {
     		FileReader fr = new FileReader(file);
 			BufferedReader br = new BufferedReader(fr);
@@ -59,7 +59,7 @@ class Matrix {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    }
+    }*/
 
     /**
      * {@inheritDoc}

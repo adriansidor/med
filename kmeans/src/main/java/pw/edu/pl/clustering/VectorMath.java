@@ -35,7 +35,7 @@ public class VectorMath {
     	}
     }
     
-    public static Vector<Double> create(String line, String separator, int[] without) {
+/*    public static Vector<Double> create(String line, String separator, int[] without) {
     	String[] values = line.split(separator);
     	int columns;
     	if(without != null) {
@@ -51,6 +51,6 @@ public class VectorMath {
     	}
     	
     	return vector;
-    }
+    }*/
 
 }
