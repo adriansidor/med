@@ -56,7 +56,7 @@ public class ComparisonTests {
 
         RandIndex randIndexer = new RandIndex();
         for (ClusteringAlgorithm algorithm : algorithms) {
-            List<Double> randIndexes = new ArrayList<>();git
+            List<Double> randIndexes = new ArrayList<>();
             IntStream.range(0, 100).forEach(i -> {
                 int[] clusters = algorithm.cluster(matrix, 3);
                 randIndexes.add(
