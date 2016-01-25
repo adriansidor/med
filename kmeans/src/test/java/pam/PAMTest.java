@@ -3,6 +3,7 @@ package pam;
 import org.junit.Test;
 import pw.edu.pl.clustering.Matrix;
 import pw.edu.pl.clustering.PAMClustering;
+import pw.edu.pl.clustering.RandIndex;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -59,6 +60,8 @@ public class PAMTest {
         System.out.println("setosa       " + classMatrix[0][0] + "       " + classMatrix[0][1] + " 	" + classMatrix[0][2]);
         System.out.println("versicolor    " + classMatrix[1][0] + "       " + classMatrix[1][1] + " 	" + classMatrix[1][2]);
         System.out.println("virginica     " + classMatrix[2][0] + "       " + classMatrix[2][1] + " 	" + classMatrix[2][2]);
+
+        System.out.println("Rand index: " + new RandIndex().calculate(oc.toArray(new Integer[oc.size()]), clusters));
     }
 
 

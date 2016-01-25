@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-public class BisectingKMeans {
+public class BisectingKMeans implements ClusteringAlgorithm {
 
     public int[] cluster(Matrix dataPoints, int numClusters) {
         // Handle a simple base case.
@@ -16,7 +16,7 @@ public class BisectingKMeans {
         }
 
         // Instantiate a KMeansClustering instance which will be used to bisect
-        KMeansClustering kmeans = new KMeansClustering();
+        ClusteringAlgorithm clusterer = getClusterer();
 
         // Create a count of cluster assignments.
         int[] numAssignments = new int[numClusters];
@@ -29,7 +29,7 @@ public class BisectingKMeans {
             clusters.add(0, new ArrayList<Vector<Double>>());
 
         // Make the first bisection.
-        int[] assignments = kmeans.cluster(dataPoints, 2);
+        int[] assignments = clusterer.cluster(dataPoints, 2);
 
         // Count the number of assignments made to each cluster and move the
         // vectors in to the corresponding list.
@@ -62,7 +62,7 @@ public class BisectingKMeans {
 
             // Split the largest cluster.
             Matrix clusterToSplit = new Matrix(originalCluster);
-            int[] newAssignments = kmeans.cluster(clusterToSplit, 2);
+            int[] newAssignments = clusterer.cluster(clusterToSplit, 2);
 
             // Clear the lists for cluster being split and the new cluster.
             // Also clear the number of assignments.
@@ -95,5 +95,14 @@ public class BisectingKMeans {
             }
         }
         return assignments;
+    }
+
+    @Override
+    public String getName() {
+        return "Bisecting K-Means";
+    }
+
+    protected ClusteringAlgorithm getClusterer() {
+        return new KMeansClustering();
     }
 }

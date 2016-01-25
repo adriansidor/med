@@ -13,10 +13,11 @@ import org.junit.Test;
 
 import pw.edu.pl.clustering.KMeansClustering;
 import pw.edu.pl.clustering.Matrix;
+import pw.edu.pl.clustering.RandIndex;
 
 public class KMeansTest {
 	
-	private static final String filename = "src/test/resources/iris.data";
+	private static final String filename = "resources/iris.data";
 	
 	private static final String separator = ",";
 	
@@ -58,6 +59,8 @@ public class KMeansTest {
 		System.out.println("setosa       " + classMatrix[0][0] + "       " + classMatrix[0][1] + " 	" + classMatrix[0][2]);
 		System.out.println("versicolor    " + classMatrix[1][0] + "       " + classMatrix[1][1] + " 	" + classMatrix[1][2]);
 		System.out.println("virginica     " + classMatrix[2][0] + "       " + classMatrix[2][1] + " 	" + classMatrix[2][2]);
+
+		System.out.println("Rand index: " + new RandIndex().calculate(oc.toArray(new Integer[oc.size()]), clusters));
 	}
 
 }

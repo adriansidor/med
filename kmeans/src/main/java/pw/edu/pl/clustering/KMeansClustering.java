@@ -7,7 +7,7 @@ import java.util.Random;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-public class KMeansClustering {
+public class KMeansClustering implements ClusteringAlgorithm {
 
 
     public enum SeedAlgorithm {
@@ -31,11 +31,11 @@ public class KMeansClustering {
     /**
      * A small number used to determine when the centroids have converged.
      */
-    private static final double EPSILON = 1e-4;
+    protected static final double EPSILON = 1e-4;
 
-    private static final Random random = new Random();
+    protected static final Random random = new Random();
 
-    private static final Logger LOGGER = 
+    protected static final Logger LOGGER =
         Logger.getLogger(KMeansClustering.class.getName());
 
     /**
@@ -55,7 +55,7 @@ public class KMeansClustering {
         // re-computed centroids do not differ by some margin of error.
         boolean converged = false;
         while (!converged) {
-            System.err.println("Running one iteration of the K-Means loop");
+            // System.err.println("Running one iteration of the K-Means loop");
             // Setup the new set of centroids to be emtpy vectors..
             List<Vector<Double>> newCentroids = new ArrayList<Vector<Double>>(numClusters);
             for (int c = 0; c < numClusters; ++c) {
@@ -116,6 +116,11 @@ public class KMeansClustering {
 
         // Return the last set of assignments made.
         return assignments;
+    }
+
+    @Override
+    public String getName() {
+        return "K-Means";
     }
 
     /**

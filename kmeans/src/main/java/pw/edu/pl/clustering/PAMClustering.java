@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 /**
  * Created by Artur on 2016-01-23.
  */
-public class PAMClustering {
+public class PAMClustering implements ClusteringAlgorithm {
 
     /**
      * Assignes data points to a cluster
@@ -18,13 +18,14 @@ public class PAMClustering {
     public int[] cluster(Matrix dataPoints, int numClusters) {
         Integer[] medoids = chooseRandomPointsAsMedoids(dataPoints.rows(), numClusters);
         Assignment[] assignments = assign(medoids, dataPoints);
+        List<List<Integer>> clusters = getClusters(assignments, numClusters);
 
         double cost = Double.MAX_VALUE;
         double newCost = calculateAssignmentCost(assignments);
 
 
         while(newCost < cost) {
-            System.err.println("Running one iteration of the PAM loop");
+            //System.err.println("Running one iteration of the PAM loop");
 
             cost = newCost;
             List<Integer> newMedoids = new ArrayList<>();
@@ -32,21 +33,22 @@ public class PAMClustering {
                 int bestSwap = medoids[medoidIndex];
                 double minCost = Double.MAX_VALUE;
                 Integer[] tmpMedoids = Arrays.copyOf(medoids, medoids.length);
-                for (int rowIndex = 0; rowIndex < dataPoints.rows(); rowIndex++) {
-                    if (arrayContains(medoids, rowIndex))
+                for (Integer clusterRowIndex : clusters.get(medoidIndex)) {
+                    if (arrayContains(medoids, clusterRowIndex))
                         continue;
-                    swapMedoid(tmpMedoids, medoidIndex, rowIndex);
+                    swapMedoid(tmpMedoids, medoidIndex, clusterRowIndex);
                     double assignmentCost = calculateAssignmentCost(
                             assign(newMedoids.toArray(new Integer[newMedoids.size()]), dataPoints));
                     if (assignmentCost < minCost) {
                         minCost = assignmentCost;
-                        bestSwap = rowIndex;
+                        bestSwap = clusterRowIndex;
                     }
                 }
                 newMedoids.add(bestSwap);
             }
-            newCost = calculateAssignmentCost(
-                            assign(newMedoids.toArray(new Integer[newMedoids.size()]), dataPoints));
+            assignments = assign(newMedoids.toArray(new Integer[newMedoids.size()]), dataPoints);
+            newCost = calculateAssignmentCost(assignments);
+            clusters = getClusters(assignments, numClusters);
             medoids = newMedoids.toArray(new Integer[newMedoids.size()]);
         }
 
@@ -54,7 +56,23 @@ public class PAMClustering {
         return convertAssignmentsToArray(assign(medoids, dataPoints));
     }
 
-    private int[] convertAssignmentsToArray(Assignment[] assign) {
+    @Override
+    public String getName() {
+        return "PAM";
+    }
+
+    protected List<List<Integer>> getClusters(Assignment[] assignments, int numClusters) {
+        List<List<Integer>> result = new ArrayList<>();
+        for (int clusterIndex = 0; clusterIndex < numClusters; clusterIndex++) {
+            result.add(new ArrayList<>());
+        }
+        for (int rowIndex = 0; rowIndex < assignments.length; rowIndex++) {
+            result.get(assignments[rowIndex].getMedoid()).add(rowIndex);
+        }
+        return result;
+    }
+
+    protected int[] convertAssignmentsToArray(Assignment[] assign) {
         int[] result = new int[assign.length];
         for (int assignIndex = 0; assignIndex < assign.length; assignIndex++) {
             result[assignIndex] = assign[assignIndex].getMedoid();
@@ -62,7 +80,7 @@ public class PAMClustering {
         return result;
     }
 
-    private boolean arrayContains(Integer[] array, int element) {
+    protected boolean arrayContains(Integer[] array, int element) {
         for (int i = 0; i < array.length; i++) {
             if (array[i] == element) {
                 return true;
@@ -71,11 +89,11 @@ public class PAMClustering {
         return false;
     }
 
-    private void swapMedoid(Integer[] newMedoids, int medoidIndex, int rowIndex) {
+    protected void swapMedoid(Integer[] newMedoids, int medoidIndex, int rowIndex) {
         newMedoids[medoidIndex] = rowIndex;
     }
 
-    private double calculateAssignmentCost(Assignment[] assignments) {
+    protected double calculateAssignmentCost(Assignment[] assignments) {
         double cost = 0;
         for(Assignment assignment : assignments) {
             cost += assignment.getDistance();
@@ -83,7 +101,7 @@ public class PAMClustering {
         return cost;
     }
 
-    private Assignment[] assign(Integer[] medoids, Matrix dataPoints) {
+    protected Assignment[] assign(Integer[] medoids, Matrix dataPoints) {
         Assignment[] result = new Assignment[dataPoints.rows()];
         for (int rowIndex = 0; rowIndex < dataPoints.rows(); rowIndex++) {
             double minDistanceToMedoid = Double.MAX_VALUE;
@@ -104,7 +122,7 @@ public class PAMClustering {
         return result;
     }
 
-    private Integer[] chooseRandomPointsAsMedoids(int pointNumber,
+    protected Integer[] chooseRandomPointsAsMedoids(int pointNumber,
                                                  int numClusters) {
         List<Integer> indices = IntStream.range(0, pointNumber)
                 .boxed().collect(Collectors.toList());
@@ -114,7 +132,7 @@ public class PAMClustering {
         return result.toArray(new Integer[result.size()]);
     }
 
-    private class Assignment {
+    protected class Assignment {
         private final int medoid;
         private final double distance;
 
