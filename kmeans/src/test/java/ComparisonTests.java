@@ -57,17 +57,32 @@ public class ComparisonTests {
         RandIndex randIndexer = new RandIndex();
         for (ClusteringAlgorithm algorithm : algorithms) {
             List<Double> randIndexes = new ArrayList<>();
+            List<Long> times = new ArrayList<>();
             IntStream.range(0, 100).forEach(i -> {
+                long startTime = System.currentTimeMillis();
                 int[] clusters = algorithm.cluster(matrix, 3);
+                long stopTime = System.currentTimeMillis();
                 randIndexes.add(
                         randIndexer.calculate(oc.toArray(new Integer[oc.size()]),
                                               clusters));
+                times.add(stopTime - startTime);
             });
             Statistics statistics = new Statistics(randIndexes);
             System.out.println("Algorithm: " + algorithm.getName());
             System.out.println("Mean of Rand index: " + statistics.getMean());
-            System.out.println("Standard deviation of Rand index: " + statistics.getStandardDeviation() + "\n");
+            System.out.println("Standard deviation of Rand index: " + statistics.getStandardDeviation());
+            System.out.println("Average time: " + calculateMeanTime(times) + "\n");
         }
+    }
+
+    private double calculateMeanTime(List<Long> times) {
+        int valueCount = 0;
+        double sum = 0;
+        for (Long time : times) {
+            valueCount++;
+            sum += time;
+        }
+        return sum / valueCount;
     }
 
     private class Statistics {
